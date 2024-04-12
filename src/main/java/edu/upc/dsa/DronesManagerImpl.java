@@ -151,7 +151,7 @@ public class DronesManagerImpl implements DronesManager {
     public boolean mirarDisponiblidad(List<PlanVuelo> planPiloto, double dia1, double dia2, double hora1, double hora2){
 
         for(PlanVuelo pl: planPiloto){
-            if((dia1>pl.getDia())||(pl.getDia()<dia2)){
+            if((dia1<pl.getDia())||(pl.getDia()>dia2)){
                 if((hora1>pl.getHora())||(pl.getHora()<hora2)){
                     return true; //
                 }
