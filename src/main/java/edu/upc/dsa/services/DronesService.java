@@ -133,4 +133,30 @@ public class DronesService {
             return Response.status(201).entity(pil).build();
         }
     }
+
+    @PUT
+    @ApiOperation(value = "reservarPlanVuelo", notes = "")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful"),
+            @ApiResponse(code = 404, message = "Track not found")
+    })
+    @Path("/reservarPlanVuelo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response reservarPlanVuelo(PlanVueloTransfer p) {
+        int res = dm.addReservaPlanVuelo(p.getIdPiloto(), p.getIdDron(),p.getFecha(), p.getDuracion(), p.getInicio(), p.getDestino());
+        Mensaje m = new Mensaje();
+        if(res == -1){
+            m.setTexto("El Piloto o el Dron estan ocupados en ese periodo");
+            return Response.status(404).entity(m).build();
+        }
+        else if(res == -2){
+            m.setTexto("El dron esta en reparación");
+            return Response.status(404).entity(m).build();
+        }
+        else{
+            m.setTexto("Reserva realizada con exito");
+            return Response.status(201).entity(m).build();
+        }
+    }
 }
