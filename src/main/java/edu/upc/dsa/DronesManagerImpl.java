@@ -94,6 +94,7 @@ public class DronesManagerImpl implements DronesManager {
         catch(EmptyQueueException empExp){
             logger.warn("El almacen esta vacío");
             empExp.printStackTrace();
+            return null;
         }
         listaDrones.put(d.getIdentificador(), d);
         logger.info("El dron con id: " + d.getIdentificador() + " ha sido reparado");

@@ -70,4 +70,67 @@ public class DronesService {
         GenericEntity<List<DronTransfer>> entity = new GenericEntity<List<DronTransfer>>(lp){};
         return Response.status(201).entity(entity).build();
     }
+    @GET
+    @ApiOperation(value = "plan de vuelo del piloto", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = PlanVuelo.class, responseContainer="List")
+    })
+    @Path("/planVueloByPiloto/{idPiloto}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPlanVueloByPiloto(@PathParam("idPiloto") String id) {
+        List<PlanVuelo> p = this.dm.planVueloByPiloto(id);
+
+        GenericEntity<List<PlanVuelo>> entity = new GenericEntity<List<PlanVuelo>>(p){};
+        return Response.status(201).entity(entity).build();
+    }
+    @GET
+    @ApiOperation(value = "plan de vuelo del dron", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = PlanVuelo.class, responseContainer="List")
+    })
+    @Path("/planVueloByDron/{idDron}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPlanVueloByDron(@PathParam("idDron") String id) {
+        List<PlanVuelo> p = this.dm.planVueloByDron(id);
+
+        GenericEntity<List<PlanVuelo>> entity = new GenericEntity<List<PlanVuelo>>(p){};
+        return Response.status(201).entity(entity).build();
+    }
+
+    @PUT
+    @ApiOperation(value = "Guardar dron en almacen de reparciones", notes = "indica en 'texto' el id del dron que quiere guardar")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful"),
+            @ApiResponse(code = 404, message = "Track not found")
+    })
+    @Path("/guardarEnAlmacen")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response guardarEnAlmacen(Mensaje m) {
+        dm.guardarEnAlmacen(m.getTexto());
+        m.setTexto("Dron a la espera de ser reparado");
+        return Response.status(201).entity(m).build();
+    }
+
+    @PUT
+    @ApiOperation(value = "Reparar dron", notes = "")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful"),
+            @ApiResponse(code = 404, message = "Dron not found")
+    })
+    @Path("/repararDron")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response repararDron() {
+        Dron p = dm.repararDron();
+        if(p == null){
+            Mensaje m = new Mensaje("No hay drones a reparar");
+            return Response.status(404).entity(m).build();
+        }
+        else{
+
+            DronTransfer pil = new DronTransfer(p.getIdentificador(), p.getNombre(),p.getFabricante(),p.getModelo(),p.getHorasVueloD());
+            return Response.status(201).entity(pil).build();
+        }
+    }
 }
